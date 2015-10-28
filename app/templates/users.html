@@ -1,0 +1,24 @@
+<table class="table table-responsive table-hover table-bordered">
+    <thead>
+        <td>Username</td>
+        <td>Name</td>
+        <td>Email</td>
+        <td>Last Active</td>
+        <td>Date Joined</td>
+        <td>Staff</td>
+        <td>Active</td>
+        <td>Superuser</td>
+    </thead>
+    <tbody>
+        <tr ng-repeat="user in users">
+            <td>{{user.username}}</td>
+            <td>{{user.first_name}} {{user.last_name}}</td>
+            <td>{{user.email}}</td>
+            <td>{{user.last_login | date:'fullDate'}}</td>
+            <td>{{user.date_joined | date:'fullDate'}}</td>
+            <td>{{user.is_staff}}</td>
+            <td>{{user.is_active}}</td>
+            <td>{{user.is_superuser}}</td>
+        </tr>
+    </tbody>
+</table>

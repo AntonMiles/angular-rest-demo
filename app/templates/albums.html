@@ -1,0 +1,16 @@
+<table class="table table-responsive table-hover table-bordered">
+    <thead>
+        <td>Album Name</td>
+        <td>Artist</td>
+        <td>Release Year</td>
+        <td>Number of Stars</td>
+    </thead>
+    <tbody>
+        <tr ng-repeat="album in albums | orderBy: orderByVar">
+            <td>{{album.name}}</td>
+            <td>{{album.artist.first_name}} {{album.artist.last_name}}</td>
+            <td>{{album.release_year}}</td>
+            <td>{{album.num_stars}}</td>
+        </tr>
+    </tbody>
+</table>

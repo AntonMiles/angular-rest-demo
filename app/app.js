@@ -1,4 +1,6 @@
 'use strict';
+var cookieDate = new Date();
+cookieDate.setMinutes(cookieDate.getMinutes() + 60);
 
 angular.module("myApp", [
         'ui.router',
@@ -55,7 +57,9 @@ angular.module("myApp", [
     .config(['$resourceProvider', function ($resourceProvider) {
         $resourceProvider.defaults.stripTrailingSlashes = false;
     }])
+
     .config(['$cookiesProvider', function ($cookiesProvider) {
         $cookiesProvider.defaults.secure = false;
-        $cookiesProvider.defaults.httpOnly = true;
+        //$cookiesProvider.defaults.httpOnly = true;
+        $cookiesProvider.defaults.expires = cookieDate;
 }]);

@@ -12,14 +12,24 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 </head>
 <body ng-app="myApp">
+        <div ng-controller="login">
+            <div ng-if="!user.loggedIn">
+                <form ng-submit="submit()">
+                    <input ng-model="user.username" type="text" name="user" placeholder="Username" />
+                    <input ng-model="user.password" type="password" name="pass" placeholder="Password" />
+                    <input type="submit" value="Login" ng-click="login()"/>
+                </form>
+            </div>
 
-    <ul class="nav nav-tabs">
-        <li ui-sref-active="active"><a ui-sref="home">Home</a></li>
-        <li ui-sref-active="active"><a ui-sref="data.users">Users</a></li>
-        <li ui-sref-active="active"><a ui-sref="data.albums">Albums</a></li>
-        <li ui-sref-active="active"><a ui-sref="data.all">All</a></li>
-    </ul>
-    <div ui-view> </div>
-
-</body>
+            <div ng-if="user.loggedIn">
+                <ul class="nav nav-tabs">
+                    <li ui-sref-active="active"><a ui-sref="home">Home</a></li>
+                    <li ui-sref-active="active"><a ui-sref="data.users">Users</a></li>
+                    <li ui-sref-active="active"><a ui-sref="data.albums">Albums</a></li>
+                    <li ui-sref-active="active"><a ui-sref="data.all">All</a></li>
+                </ul>
+                <div ui-view> </div>
+            </div>
+        </div>
+    </body>
 </html>

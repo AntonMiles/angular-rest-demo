@@ -13,3 +13,4 @@ then run by moving to the directory in terminal, and running...
 ```
 http-server -o
 ```
+This (the Angular frontend) needs run after the backend is running, otherwise you might accidentally spawn this process into the wrong port. It should live at `localhost:8080`

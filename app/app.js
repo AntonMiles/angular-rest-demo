@@ -1,9 +1,11 @@
 'use strict';
 
 angular.module("myApp", [
-    'ui.router'
-]).
-config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
+        'ui.router',
+        'ngResource',
+        'ngCookies'
+    ])
+    .config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
   $urlRouterProvider.otherwise('^/home');
   $stateProvider
       .state('home', {
@@ -49,4 +51,11 @@ config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRou
           }
         }
       })
+    }])
+    .config(['$resourceProvider', function ($resourceProvider) {
+        $resourceProvider.defaults.stripTrailingSlashes = false;
+    }])
+    .config(['$cookiesProvider', function ($cookiesProvider) {
+        $cookiesProvider.defaults.secure = false;
+        $cookiesProvider.defaults.httpOnly = true;
 }]);

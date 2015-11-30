@@ -1,12 +1,12 @@
 <table class="table table-responsive table-hover table-bordered">
     <thead>
-        <td>Album Name</td>
-        <td>Artist</td>
-        <td>Release Year</td>
-        <td>Number of Stars</td>
+    <th>Album Name</th>
+    <th>Artist/th>
+    <th>Release Year</th>
+    <th>Number of Stars</th>
     </thead>
     <tbody>
-        <tr ng-repeat="album in albums | orderBy: orderByVar">
+    <tr ng-repeat="album in albums | orderBy:sortType:sortReverse | filter:searchString">
             <td>{{album.name}}</td>
             <td>{{album.artist.first_name}} {{album.artist.last_name}}</td>
             <td>{{album.release_year}}</td>

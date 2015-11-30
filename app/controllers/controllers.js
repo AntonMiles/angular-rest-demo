@@ -1,30 +1,67 @@
-/**
- * Created by anton on 10/21/15.
- */
-
-var apiUrl = "http://127.0.0.1:8000/";
-
 var myApp = angular.module("myApp");
-myApp.controller("albums", ["$scope", "$http", function($scope, $http) {
-    $scope.albums = [];
-    $scope.orderByVar = 'release_year';
-    $http.get(apiUrl + "albums")
-        .then(function(response) {
-            response.data.results.forEach(function(album) {
-                $http.get(album.artist)
-                    .then(function(response) {
-                        album.artist = response.data;
-                    });
-                $scope.albums.push(album);
-            })
-        });
-  }]
-);
 
-myApp.controller("users", ["$scope", "$http", function($scope, $http) {
+myApp.controller("login", ['$scope', '$cookies', 'LoginService', 'VerifyJWTService', function ($scope, $cookies, LoginService, VerifyJWTService) {
+    $scope.user = {};
+    $scope.user.username = "";
+    $scope.user.password = "";
+
+    if ($cookies.get('authToken') === null)
+        $scope.user.loggedIn = true;
+
+    else
+        $scope.user.loggedIn = false;
+
+    var loginError = function () {
+        alert("failure logging in")
+    };
+    var loginSuccess = function (result) {
+        var token = {"token": result.token};
+        var verifyJWTToken = VerifyJWTService.verify(token);
+        verifyJWTToken.$promise
+            .then(tokenSuccess, tokenError);
+        $cookies.put('authToken', result.token);
+        $scope.user.loggedIn = true;
+    };
+    var tokenSuccess = function (result) {
+    };
+    var tokenError = function () {
+        alert("Unable to verify token signature")
+    };
+
+    $scope.login = function () {
+        var credentials = {username: $scope.user.username, password: $scope.user.password};
+        var tokenPromise = LoginService.authenticate(credentials);
+        tokenPromise.$promise
+            .then(loginSuccess, loginError);
+    }
+}]);
+
+myApp.controller("albums", ["$scope", "$http", "AlbumsService", function ($scope, $http, AlbumsService) {
+    $scope.albums = [];
+    var fetchSuccess = function (result) {
+        result.results.forEach(function (album) {
+            $http.get(album.artist)
+                .then(function (response) {
+                    album.artist = response.data;
+                });
+            $scope.albums.push(album);
+        })
+    };
+    var fetchError = function () {
+        alert("failure logging in")
+    };
+
+    var tokenPromise = AlbumsService.get();
+    tokenPromise.$promise
+        .then(fetchSuccess, fetchError);
+}]);
+
+myApp.controller("users", ["$scope", "UsersService", function ($scope, UsersService) {
     $scope.users = [];
-    $http.get(apiUrl + "users")
-        .then(function(response) {
-            $scope.users = response.data.results;
+    var tokenPromise = UsersService.get();
+    tokenPromise.$promise
+        .then(function (result) {
+            $scope.users = result.results;
         })
 }]);
+

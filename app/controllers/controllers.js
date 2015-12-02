@@ -5,14 +5,14 @@ myApp.controller("login", ['$scope', '$cookies', 'LoginService', 'VerifyJWTServi
     $scope.user.username = "";
     $scope.user.password = "";
 
-    if ($cookies.get('authToken') === null)
+    if ($cookies.get('authToken'))
         $scope.user.loggedIn = true;
 
     else
         $scope.user.loggedIn = false;
 
     var loginError = function () {
-        alert("failure logging in")
+        console.log("failure logging in")
     };
     var loginSuccess = function (result) {
         var token = {"token": result.token};
@@ -25,7 +25,7 @@ myApp.controller("login", ['$scope', '$cookies', 'LoginService', 'VerifyJWTServi
     var tokenSuccess = function (result) {
     };
     var tokenError = function () {
-        alert("Unable to verify token signature")
+        console.log("Unable to verify token signature")
     };
 
     $scope.login = function () {
@@ -48,7 +48,7 @@ myApp.controller("albums", ["$scope", "$http", "AlbumsService", function ($scope
         })
     };
     var fetchError = function () {
-        alert("failure logging in")
+        console.log("failure fetching Album data")
     };
 
     var tokenPromise = AlbumsService.get();
@@ -65,3 +65,22 @@ myApp.controller("users", ["$scope", "UsersService", function ($scope, UsersServ
         })
 }]);
 
+myApp.controller("github", ["$scope", "RepositoryService", function($scope, RepositoryService) {
+    $scope.githubUsername = "";
+    $scope.repos = [];
+
+    var fetchSuccess = function(result) {
+        $scope.repos = result;
+        console.log($scope.repos)
+    };
+    var fetchError = function() {
+        console.log("Unable to fetch repos for " + $scope.githubUsername)
+    };
+
+    $scope.search = function() {
+        var username = {githubUsername: $scope.githubUsername};
+        var tokenPromise = RepositoryService.getRepos(username);
+        tokenPromise.$promise
+            .then(fetchSuccess, fetchError);
+    }
+}]);

@@ -5,11 +5,51 @@ cookieDate.setMinutes(cookieDate.getMinutes() + 60);
 angular.module("myApp", [
         'ui.router',
         'ngResource',
-        'ngCookies'
+        'ngCookies',
+        'myApp.index',
+        'myApp.login',
+        'base64'
     ])
-    .config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
-        $urlRouterProvider.otherwise('^/home');
+    .config(['$urlRouterProvider', function ($urlRouterProvider) {
+        $urlRouterProvider.otherwise('/home');
+    }])
+    .config(['$stateProvider', function($stateProvider) {
         $stateProvider
+        .state('base', {
+            abstract: true,
+            views: {
+                '@': {
+                    templateUrl: '/body/body.html',
+                    controller: 'index'
+                }
+            }
+        })
+            .state('base.home', {
+            url: '^/home',
+            views: {
+                'login@base': {
+                    templateUrl: '/login/login.html',
+                    controller: 'login'
+                },
+                'header@base': {
+                    templateUrl: '/header/header.html',
+                    controller: 'index'
+                }
+            }
+
+        })
+    }])
+    .config(['$resourceProvider', function ($resourceProvider) {
+        $resourceProvider.defaults.stripTrailingSlashes = false;
+    }])
+    .config(['$cookiesProvider', function ($cookiesProvider) {
+        $cookiesProvider.defaults.secure = false;
+        //$cookiesProvider.defaults.httpOnly = true;
+        $cookiesProvider.defaults.expires = cookieDate;
+    }]);
+
+
+/*$stateProvider
             .state('home', {
                 url: '^/home'
             })
@@ -22,7 +62,7 @@ angular.module("myApp", [
                     }
                 }
             })
-            .state('data.users', {
+            .state('base.home.users', {
                 url: '/users',
                 views: {
                     'users@data': {
@@ -66,13 +106,4 @@ angular.module("myApp", [
                     }
                 }
             })
-    }])
-    .config(['$resourceProvider', function ($resourceProvider) {
-        $resourceProvider.defaults.stripTrailingSlashes = false;
-    }])
-
-    .config(['$cookiesProvider', function ($cookiesProvider) {
-        $cookiesProvider.defaults.secure = false;
-        //$cookiesProvider.defaults.httpOnly = true;
-        $cookiesProvider.defaults.expires = cookieDate;
-    }]);
+    }])*/

@@ -1,36 +1,25 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="myApp" ng-controller="index">
 <head>
     <title>:)</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular-resource.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular-cookies.js"></script>
-    <script src="https://angular-ui.github.io/ui-router/release/angular-ui-router.js"></script>
+    <!-- Bower installed resources -->
+    <script src="libs/angular/angular.js"></script>
+    <script src="libs/angular-resource/angular-resource.js"></script>
+    <script src="libs/angular-cookies/angular-cookies.js"></script>
+    <script src="libs/angular-ui-router/angular-ui-router.js"></script>
+    <script src="libs/angular-base64/angular-base64.js"></script>
+    <link rel="stylesheet" href="libs/bootstrap/bootstrap.css">
+    <link rel="stylesheet" href="libs/html5-boilerplate/normalize.css">
+    <link rel="stylesheet" href="libs/html5-boilerplate/main.css">
+
+    <!-- Native resources -->
     <script src="app.js"></script>
+    <script src="index.js"></script>
+    <script src="login/login.js"></script>
     <script src="controllers/controllers.js"></script>
     <script src="resources/resources.js"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 </head>
-<body ng-app="myApp">
-        <div ng-controller="login">
-            <div ng-if="!user.loggedIn">
-                <form ng-submit="submit()">
-                    <input ng-model="user.username" type="text" name="user" placeholder="Username" />
-                    <input ng-model="user.password" type="password" name="pass" placeholder="Password" />
-                    <input type="submit" value="Login" ng-click="login()"/>
-                </form>
-            </div>
-
-            <div ng-if="user.loggedIn">
-                <ul class="nav nav-tabs">
-                    <li ui-sref-active="active"><a ui-sref="home">Home</a></li>
-                    <li ui-sref-active="active"><a ui-sref="data.users">Users</a></li>
-                    <li ui-sref-active="active"><a ui-sref="data.albums">Albums</a></li>
-                    <li ui-sref-active="active"><a ui-sref="data.github">Github</a></li>
-                    <li ui-sref-active="active"><a ui-sref="data.all">All</a></li>
-                </ul>
-                <div ui-view> </div>
-            </div>
-        </div>
-    </body>
+<body>
+    <div ui-view></div>
+</body>
 </html>

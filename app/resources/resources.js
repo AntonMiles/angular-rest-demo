@@ -7,39 +7,6 @@ myApp.config(function ($httpProvider) {
     $httpProvider.interceptors.push('authInterceptor');
 });
 
-myApp.factory('LoginService', ['$resource', function ($resource) {
-    return $resource(
-        apiUrl + 'auth/token/',
-        {},
-        {
-            authenticate: {
-                method: "POST"
-            }
-        }
-    )
-}]);
-myApp.factory('VerifyJWTService', ['$resource', function ($resource) {
-    return $resource(
-        apiUrl + 'auth/verify/',
-        {},
-        {
-            verify: {
-                method: "POST"
-            }
-        }
-    )
-}]);
-myApp.factory('LogoutService', ['$resource', function ($resource) {
-    return $resource(
-        apiUrl + 'auth/logout/',
-        {},
-        {
-            logout: {
-                method: "POST"
-            }
-        }
-    )
-}]);
 
 myApp.factory('AlbumsService', ['$resource', function ($resource) {
     return $resource(apiUrl + 'albums/');

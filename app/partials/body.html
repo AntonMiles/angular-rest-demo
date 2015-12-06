@@ -1,0 +1,3 @@
+<div ui-view="header" ng-if="loggedIn"></div>
+<div ui-view="login" ng-if="!loggedIn"></div>
+<div ui-view="content" ng-if="loggedIn"></div>

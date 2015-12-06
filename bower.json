@@ -1,0 +1,26 @@
+{
+  "name": "persist-ng",
+  "description": "The Angular frontend for Persistence Portal.",
+  "version": "0.0.1",
+  "homepage": "https://github.com/edtechassociates/persist-ng",
+  "license": "MIT",
+  "private": true,
+  "install": {
+    "path": "app/libs",
+    "sources": {
+      "bootstrap": "bower_components/bootstrap/dist/css/bootstrap.css",
+      "html5-boilerplate": "bower_components/html5-boilerplate/dist/css/**"
+    }
+  },
+  "dependencies": {
+    "angular": "latest",
+    "angular-cookies": "latest",
+    "angular-resource": "latest",
+    "angular-ui-router": "latest",
+    "angular-base64": "latest",
+    "bootstrap":"latest",
+    "angular-loader": "latest",
+    "angular-mocks": "latest",
+    "html5-boilerplate": "latest"
+  }
+}

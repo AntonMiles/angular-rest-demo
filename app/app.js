@@ -1,78 +1,122 @@
 'use strict';
+
+/*Used to set the cookie to expire at the same time as the JWT*/
 var cookieDate = new Date();
 cookieDate.setMinutes(cookieDate.getMinutes() + 60);
 
 angular.module("myApp", [
         'ui.router',
         'ngResource',
-        'ngCookies'
+        'ngCookies',
+        'base64',
+        'myApp.index',
+        'myApp.login',
+        'myApp.github',
+        'myApp.albums',
+        'myApp.users'
     ])
-    .config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
-        $urlRouterProvider.otherwise('^/home');
+
+    /*State Management*/
+    .config(['$urlRouterProvider', function ($urlRouterProvider) {
+        $urlRouterProvider.otherwise('/home');
+    }])
+    .config(['$stateProvider', function($stateProvider) {
         $stateProvider
-            .state('home', {
-                url: '^/home'
-            })
-            .state('data', {
-                url: '^/data',
+            .state('base', {
                 abstract: true,
                 views: {
                     '@': {
-                        templateUrl: '/templates/data.html'
+                        templateUrl: '/partials/body.html',
+                        controller: 'index'
+                    },
+                    'login@base': {
+                        templateUrl: '/login/login.html',
+                        controller: 'login'
+                    },
+                    'header@base': {
+                        templateUrl: '/partials/header.html'
+                    },
+                    'content@base': {
+                        templateUrl: '/partials/data.html'
                     }
                 }
             })
-            .state('data.users', {
-                url: '/users',
+            .state('base.home', {
+                url: '^/home'
+
+            })
+            .state('base.albums', {
+                url: '^/albums',
                 views: {
-                    'users@data': {
-                        templateUrl: '/templates/users.html',
+                    'albums@base': {
+                        templateUrl: '/albums/albums.html',
+                        controller: 'albums'
+                    }
+                }
+            })
+            .state('base.users', {
+                url: '^/users',
+                views: {
+                    'users@base': {
+                        templateUrl: '/users/users.html',
                         controller: 'users'
                     }
                 }
             })
-            .state('data.albums', {
-                url: '/albums',
+            .state('base.github', {
+                url: '^/github',
                 views: {
-                    'albums@data': {
-                        templateUrl: '/templates/albums.html',
-                        controller: "albums"
-                    }
-                }
-            })
-            .state('data.github', {
-                url: '/github',
-                views: {
-                    'github@data': {
-                        templateUrl: '/templates/github.html',
+                    'github@base': {
+                        templateUrl: '/github/github.html',
                         controller: 'github'
                     }
                 }
             })
-            .state('data.all', {
-                url: '/all',
+            .state('base.all', {
+                url: '^/all',
                 views: {
-                    'users@data': {
-                        templateUrl: '/templates/users.html',
+                    'users@base': {
+                        templateUrl: '/users/users.html',
                         controller: 'users'
                     },
-                    'albums@data': {
-                        templateUrl: '/templates/albums.html',
+                    'albums@base': {
+                        templateUrl: '/albums/albums.html',
                         controller: "albums"
                     },
-                    'github@data': {
-                        templateUrl: '/templates/github.html',
+                    'github@base': {
+                        templateUrl: '/github/github.html',
                         controller: 'github'
                     }
                 }
             })
     }])
+
+    /*Constants*/
+    .constant('apiUrl', 'http://127.0.0.1:8000/')
+    .constant('gitHubUrl', 'https://api.github.com/')
+
+    /*Configurations*/
     .config(['$resourceProvider', function ($resourceProvider) {
         $resourceProvider.defaults.stripTrailingSlashes = false;
     }])
-
     .config(['$cookiesProvider', function ($cookiesProvider) {
         $cookiesProvider.defaults.secure = false;
         //$cookiesProvider.defaults.httpOnly = true;
         $cookiesProvider.defaults.expires = cookieDate;
+    }])
+
+    /*Authentication Interceptor*/
+    .config(['$httpProvider', function ($httpProvider) {
+        $httpProvider.interceptors.push('authInterceptor');
+    }])
+    .factory('authInterceptor', ['$rootScope', '$q', '$cookies', 'apiUrl', function ($rootScope, $q, $cookies, apiUrl) {
+        return {
+            request: function(config) {
+                config.headers = config.headers || {};
+                if ($cookies.get('authToken') && config.url.indexOf(apiUrl) !== -1) {
+                    config.headers.Authorization = 'JWT ' + $cookies.get('authToken');
+                }
+                return config;
+            }
+        };
     }]);

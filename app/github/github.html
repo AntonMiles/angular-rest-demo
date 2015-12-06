@@ -6,13 +6,15 @@
 </div>
 <table class="table table-responsive table-hover table-bordered">
     <thead>
-    <th>Repository Name</th>
-    <th>Description</th>
-    <th>Primary Language</th>
-    <th>URL</th>
+        <tr>
+            <th>Repository Name</th>
+            <th>Description</th>
+            <th>Primary Language</th>
+            <th>URL</th>
+        </tr>
     </thead>
     <tbody>
-    <tr ng-repeat="repo in repos">
+        <tr ng-repeat="repo in repos">
             <td>{{repo.full_name}}</td>
             <td>{{repo.description}}</td>
             <td>{{repo.language}}</td>

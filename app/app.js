@@ -1,4 +1,6 @@
 'use strict';
+
+/*Used to set the cookie to expire at the same time as the JWT*/
 var cookieDate = new Date();
 cookieDate.setMinutes(cookieDate.getMinutes() + 60);
 
@@ -6,39 +8,94 @@ angular.module("myApp", [
         'ui.router',
         'ngResource',
         'ngCookies',
+        'base64',
         'myApp.index',
         'myApp.login',
-        'base64'
+        'myApp.github',
+        'myApp.albums',
+        'myApp.users'
     ])
+
+    /*State Management*/
     .config(['$urlRouterProvider', function ($urlRouterProvider) {
         $urlRouterProvider.otherwise('/home');
     }])
     .config(['$stateProvider', function($stateProvider) {
         $stateProvider
-        .state('base', {
-            abstract: true,
-            views: {
-                '@': {
-                    templateUrl: '/body/body.html',
-                    controller: 'index'
+            .state('base', {
+                abstract: true,
+                views: {
+                    '@': {
+                        templateUrl: '/partials/body.html',
+                        controller: 'index'
+                    },
+                    'login@base': {
+                        templateUrl: '/login/login.html',
+                        controller: 'login'
+                    },
+                    'header@base': {
+                        templateUrl: '/partials/header.html'
+                    },
+                    'content@base': {
+                        templateUrl: '/partials/data.html'
+                    }
                 }
-            }
-        })
+            })
             .state('base.home', {
-            url: '^/home',
-            views: {
-                'login@base': {
-                    templateUrl: '/login/login.html',
-                    controller: 'login'
-                },
-                'header@base': {
-                    templateUrl: '/header/header.html',
-                    controller: 'index'
-                }
-            }
+                url: '^/home'
 
-        })
+            })
+            .state('base.albums', {
+                url: '^/albums',
+                views: {
+                    'albums@base': {
+                        templateUrl: '/albums/albums.html',
+                        controller: 'albums'
+                    }
+                }
+            })
+            .state('base.users', {
+                url: '^/users',
+                views: {
+                    'users@base': {
+                        templateUrl: '/users/users.html',
+                        controller: 'users'
+                    }
+                }
+            })
+            .state('base.github', {
+                url: '^/github',
+                views: {
+                    'github@base': {
+                        templateUrl: '/github/github.html',
+                        controller: 'github'
+                    }
+                }
+            })
+            .state('base.all', {
+                url: '^/all',
+                views: {
+                    'users@base': {
+                        templateUrl: '/users/users.html',
+                        controller: 'users'
+                    },
+                    'albums@base': {
+                        templateUrl: '/albums/albums.html',
+                        controller: "albums"
+                    },
+                    'github@base': {
+                        templateUrl: '/github/github.html',
+                        controller: 'github'
+                    }
+                }
+            })
     }])
+
+    /*Constants*/
+    .constant('apiUrl', 'http://127.0.0.1:8000/')
+    .constant('gitHubUrl', 'https://api.github.com/')
+
+    /*Configurations*/
     .config(['$resourceProvider', function ($resourceProvider) {
         $resourceProvider.defaults.stripTrailingSlashes = false;
     }])
@@ -46,64 +103,20 @@ angular.module("myApp", [
         $cookiesProvider.defaults.secure = false;
         //$cookiesProvider.defaults.httpOnly = true;
         $cookiesProvider.defaults.expires = cookieDate;
+    }])
+
+    /*Authentication Interceptor*/
+    .config(['$httpProvider', function ($httpProvider) {
+        $httpProvider.interceptors.push('authInterceptor');
+    }])
+    .factory('authInterceptor', ['$rootScope', '$q', '$cookies', 'apiUrl', function ($rootScope, $q, $cookies, apiUrl) {
+        return {
+            request: function(config) {
+                config.headers = config.headers || {};
+                if ($cookies.get('authToken') && config.url.indexOf(apiUrl) !== -1) {
+                    config.headers.Authorization = 'JWT ' + $cookies.get('authToken');
+                }
+                return config;
+            }
+        };
     }]);
-
-
-/*$stateProvider
-            .state('home', {
-                url: '^/home'
-            })
-            .state('data', {
-                url: '^/data',
-                abstract: true,
-                views: {
-                    '@': {
-                        templateUrl: '/templates/data.html'
-                    }
-                }
-            })
-            .state('base.home.users', {
-                url: '/users',
-                views: {
-                    'users@data': {
-                        templateUrl: '/templates/users.html',
-                        controller: 'users'
-                    }
-                }
-            })
-            .state('data.albums', {
-                url: '/albums',
-                views: {
-                    'albums@data': {
-                        templateUrl: '/templates/albums.html',
-                        controller: "albums"
-                    }
-                }
-            })
-            .state('data.github', {
-                url: '/github',
-                views: {
-                    'github@data': {
-                        templateUrl: '/templates/github.html',
-                        controller: 'github'
-                    }
-                }
-            })
-            .state('data.all', {
-                url: '/all',
-                views: {
-                    'users@data': {
-                        templateUrl: '/templates/users.html',
-                        controller: 'users'
-                    },
-                    'albums@data': {
-                        templateUrl: '/templates/albums.html',
-                        controller: "albums"
-                    },
-                    'github@data': {
-                        templateUrl: '/templates/github.html',
-                        controller: 'github'
-                    }
-                }
-            })
-    }])*/

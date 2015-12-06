@@ -1,19 +1,22 @@
 'use strict';
 
 angular.module('myApp.index', [
-    'ui.router',
     'ngCookies',
     'base64'
 ])
 
 /*Controllers*/
-.controller('index', ['$scope', '$cookies', '$base64', function($scope, $cookies, $base64) {
-    $scope.username = "";
+.controller('index', ['$scope', '$rootScope', '$cookies', '$base64', function($scope, $rootScope, $cookies, $base64) {
+    $rootScope.$watch('loggedIn', function(newValue) {
+        $scope.loggedIn = newValue;
+    });
+    $rootScope.$watch('jwtPayload', function(newValue) {
+        if (newValue)
+            $scope.username = newValue.username;
+    });
     if ($cookies.get('authToken')) {
-        var jwtPayload = angular.fromJson($base64.decode($cookies.get('authToken').split(".")[1]));
-        $scope.username = jwtPayload.username;
-        $scope.loggedIn = true;
+        $rootScope.jwtPayload = angular.fromJson($base64.decode($cookies.get('authToken').split(".")[1]));
+        $rootScope.username = $rootScope.jwtPayload.username;
+        $rootScope.loggedIn = true;
     }
-    else
-        $scope.loggedIn = false;
 }]);
